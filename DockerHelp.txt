@@ -1,0 +1,28 @@
+// run below commnd to create a container running mysql databse server
+docker run --name connect-mysql -e MYSQL_ROOT_PASSWORD=1234  -e MYSQL_USER=sa  -e MYSQL_PASSWORD=1234 -e MYSQL_DATABASE=springjpatest  -d mysql:5.6
+
+
+// Update spring boot application.properties for below :
+spring.datasource.url=jdbc:mysql://connect-mysql:3306/springjpatest
+spring.datasource.username=sa
+spring.datasource.password=1234
+spring.jpa.hibernate.ddl-auto=update
+
+## Hibernate Properties
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+spring.jpa.properties.hibernate.dialect = org.hibernate.dialect.MySQL5InnoDBDialect
+
+
+// create a docker file to build image of your spring boot application
+
+FROM openjdk:8
+ADD target/springbootjpa-0.0.1-SNAPSHOT.jar  springbootjpa-0.0.1-SNAPSHOT.jar
+EXPOSE 8086
+ENTRYPOINT ["java", "-jar", "springbootjpa-0.0.1-SNAPSHOT.jar"]
+
+// run this docker comment to create image "springbootjpawebapp" from Dockerfile
+docker build -t springbootjpawebapp .
+
+//run this web application image in container and link this with mysql container "connect-mysql"
+docker container run -p 8086:8086  --name springbootjpawebapp   --link connect-mysql:mysql  -d springbootjpawebapp
+
