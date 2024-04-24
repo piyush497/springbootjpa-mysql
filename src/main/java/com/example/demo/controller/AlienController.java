@@ -28,7 +28,7 @@ public class AlienController {
 	@ResponseBody
 	public List<Alien> getAllAliens() {	
 		
-		System.out.println("I am in controller : getAllAliens");		
+		System.out.println("I am in controller :: getAllAliens");		
 		List<Alien> aliens = repo.findAll();
 		return aliens;
 		
