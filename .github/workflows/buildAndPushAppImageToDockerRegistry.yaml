@@ -1,0 +1,57 @@
+# Name of the workflow as it appears in the GitHub Actions UI
+name: Build and Push Docker Image
+
+# Triggers the workflow
+on:
+  
+  workflow_dispatch: # Allows manual triggering of the workflow from the GitHub UI
+    # You can define inputs here if you want to pass parameters when manually triggering
+    # For example:
+    # inputs:
+    #   image_tag:
+    #     description: 'Docker image tag (e.g., v1.0.0)'
+    #     required: false
+    #     default: 'latest'
+
+# Define the jobs to be executed
+jobs:
+  build_and_push:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Step 1: Checks out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Logs into Docker Hub (or any other Docker registry).
+      # It uses secrets for username and password for security.
+      # You need to set these secrets in your GitHub repository settings:
+      # DOCKER_USERNAME: Your Docker Hub username
+      # DOCKER_PASSWORD: Your Docker Hub access token or password
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # Step 3: Sets up Docker Buildx. Buildx is a Docker CLI plugin for extended build capabilities,
+      # including multi-platform builds and caching.
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Step 4: Builds and pushes the Docker image.
+      # It uses the current directory as the build context.
+      # It pushes the image to Docker Hub with two tags: 'latest' and a tag based on the commit SHA.
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: . # The build context (directory containing Dockerfile)
+          push: true # Whether to push the image to the registry
+          tags: |
+            # Replace 'your-dockerhub-username/your-app-name' with your actual image name
+            piyush497/springbootjpa-mysql:latest
+            piyush497/springbootjpa-mysql:${{ github.sha }}
+          cache-from: type=gha # Use GitHub Actions cache for faster builds
+          cache-to: type=gha,mode=max # Cache layers for subsequent builds
