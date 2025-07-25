@@ -39,7 +39,14 @@ jobs:
       # (typically in the 'target/' directory).
       - name: Build Spring Boot Application
         run: mvn clean package -DskipTests # -DskipTests to skip tests for faster build, remove if tests are mandatory
-
+      # Step 4: Diagnose: List files in the current directory and target/
+      # This step will help confirm if the 'target' directory and JAR are present after the Maven build.
+      - name: List files for debugging
+        run: |
+          echo "Listing files in current directory:"
+          ls -F
+          echo "Listing files in target/ directory:"
+          ls -F target/ || echo "target/ directory not found or empty."
       # Step 4: Logs into Docker Hub (or any other Docker registry).
       # It uses secrets for username and password for security.
       # You need to set these secrets in your GitHub repository settings:
