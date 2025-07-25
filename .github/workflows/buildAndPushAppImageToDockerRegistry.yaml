@@ -67,6 +67,6 @@ jobs:
           # Replace 'your-dockerhub-username/your-app-name' with your actual image name
           tags: |            
             piyush497/springbootjpa-mysql:latest
-            your-dockerhub-username/your-app-name:${{ github.sha }}
+            piyush497/springbootjpa-mysql:latest:${{ github.sha }}
           cache-from: type=gha # Use GitHub Actions cache for faster builds
           cache-to: type=gha,mode=max # Cache layers for subsequent builds
