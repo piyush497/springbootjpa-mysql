@@ -85,7 +85,7 @@ jobs:
         kubectl get pods
         kubectl get deployments
         kubectl get services
-        kubectl rollout status deployment/java-app-deployment
+        kubectl rollout status deployment/springbootjpa-app-deployment
         # You might add a curl command here if your service is accessible within the cluster
         # e.g., kubectl exec -it $(kubectl get pod -l app=java-app -o jsonpath='{.items[0].metadata.name}') -- curl localhost:8080
 
